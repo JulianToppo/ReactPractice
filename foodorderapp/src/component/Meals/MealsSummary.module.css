@@ -1,0 +1,13 @@
+.welcomeNote {
+    padding:30px;
+   margin-top: -10rem;
+    margin-left: 20%;
+    margin-right: 20%;
+    border-radius: 30px;
+    font-size: large;
+    color: white;
+    position: relative;
+    text-align: center;
+    background-color: rgb(47, 45, 45);
+  
+  }
