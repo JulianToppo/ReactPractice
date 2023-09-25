@@ -1,0 +1,23 @@
+.MenuCard{
+    padding: 2rem;
+    background-color: white;
+    margin-left:8%;
+    margin-right: 8%;
+    margin-top: 3%;
+    border-radius: 20px;
+}
+
+.Dish_Name{
+    font-weight:bolder;
+}
+
+.description {
+    font-style: italic;
+    font-weight: 500;
+}
+
+.price{
+    color: red;
+    font-weight: bold;
+    font-size: large;
+}
