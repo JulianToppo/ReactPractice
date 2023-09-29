@@ -2,9 +2,14 @@ import CartIcon from '../Cart/CartIcon';
 import classes from './HeaderCartButton.module.css';
 
 const HeaderCartButton = (props) => {
+
+  const iconClickHandler=()=>{
+    console.log("on screen toggle called");
+    props.toggleCartDisplayFunction();
+  }
   return (
     <button className={classes.button}>
-      <span className={classes.icon}>
+      <span className={classes.icon} onClick={iconClickHandler}>
         <CartIcon />
       </span>
       <span>Your Cart</span>
