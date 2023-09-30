@@ -4,8 +4,11 @@ import HeaderCartButton from './HeaderCartButton';
 import mealsImage from '../../assets/meals.jpg';
 import classes from './Header.module.css';
 import MealsSummary from '../Meals/MealsSummary';
+import CartProvider from '../../store/CartProvider';
+import CartContext from '../../store/cart-contexts';
 
 const Header = (props) => {
+ 
   return (
     <Fragment>
       <header className={classes.header}>
