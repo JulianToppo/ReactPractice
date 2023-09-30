@@ -11,9 +11,12 @@ export default function AddButton(props) {
   const onClickAddHandler = (e) => {
     console.log("onClick called");
     e.preventDefault();
-
-    cartCtx.addItem({ count: itemCount, price: props.price * itemCount });
-    
+    cartCtx.addItem({
+      name: props.name,
+      count: itemCount,
+      price: props.price * itemCount,
+      individualprice:props.price
+    });
   };
 
   const changeItemCountHandler = (e) => {

@@ -1,0 +1,10 @@
+.cartOrderButtons{
+    display: flex;
+    margin: auto 60%;
+
+}
+
+.cartOrder{
+    display: flex;
+    justify-content: space-between;
+}
