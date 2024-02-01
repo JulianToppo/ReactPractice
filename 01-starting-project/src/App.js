@@ -6,10 +6,11 @@ import { useState } from 'react';
 
 function App() {
   const [movies, setmovies] = useState([])
+  const [isLoading,setIsLoading]=useState(false)
 
   const fetchMovies=async (e)=>{
     e.preventDefault();
-
+    setIsLoading(true)
     const response= await fetch('https://swapi.dev/api/films');
     const data= await response.json();
 
@@ -21,8 +22,9 @@ function App() {
         openingText:movie.opening_crawl
       }
     })
-
+    
     setmovies(formattedMovies)
+    setIsLoading(false)
 
   }
 
@@ -32,7 +34,9 @@ function App() {
         <button onClick={fetchMovies}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={movies} />
+        {!isLoading && movies.length && <MoviesList movies={movies} />}
+        {!isLoading && movies.length===0 && <p>Found no movies</p>}
+        {isLoading && <p>Is Loading...</p>}
       </section>
     </React.Fragment>
   );
