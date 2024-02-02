@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import MoviesList from './components/MoviesList';
 import './App.css';
 
@@ -8,12 +8,12 @@ function App() {
   const [error, setError] = useState("");
   const [timerCancel,setTimerCancel]= useState("")
   
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
     try {
-      const response = await fetch('https://swapi.dev/api/film');
+      const response = await fetch('https://swapi.dev/api/films');
       if (!response.ok) {
         throw new Error('Something went wrong... Retrying');
       }
@@ -26,13 +26,21 @@ function App() {
       }));
       setMovies(formattedMovies);
       setIsLoading(false);
+      if(timerCancel){
+        clearTimeout(timerCancel)
+      }
     } catch (error) {
       setError(error.message);
       let timer=setTimeout(fetchMovies, 5000);
       setTimerCancel(timer);
     }
-  };
+  }
+  ,[])
 
+  useEffect(()=>{
+     fetchMovies()
+  }
+  ,[fetchMovies])
   const cancelOnClickHandler= (e)=>{
     e.preventDefault();
     clearTimeout(timerCancel);
