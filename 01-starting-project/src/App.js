@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import MoviesList from './components/MoviesList';
 import './App.css';
 import MovieForm from './components/MovieForm';
+import {firebaseURL} from "./utils/constants"
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -14,18 +15,24 @@ function App() {
     setError("");
 
     try {
-      const response = await fetch('https://swapi.dev/api/films');
+      const response = await fetch(firebaseURL+'movies.json');
       if (!response.ok) {
         throw new Error('Something went wrong... Retrying');
       }
       const data = await response.json();
-      const formattedMovies = data.results.map(movie => ({
-        id: movie.episode_id,
-        title: movie.title,
-        releaseDate: movie.release_date,
-        openingText: movie.opening_crawl
-      }));
-      setMovies(formattedMovies);
+      console.log(data)
+      let movieArray=[];
+      for(let key in data){
+        movieArray.push({
+          id:key,
+          title:data[key].title,
+          openingText:data[key].openingText,
+          releaseDate:data[key].releaseDate
+        })
+      }
+ 
+     console.log(movieArray)
+      setMovies(movieArray);
       setIsLoading(false);
       if(timerCancel){
         clearTimeout(timerCancel)
@@ -50,14 +57,14 @@ function App() {
   return (
     <React.Fragment>
       <section>
-        <MovieForm/>
+        <MovieForm getMovies={fetchMovies}/>
       </section>
       <section>
         <button onClick={fetchMovies}>Fetch Movies</button>
         <button onClick={cancelOnClickHandler}>Cancel</button>
       </section>
       <section>
-        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {!isLoading && movies.length > 0 && <MoviesList  getMovies={fetchMovies} movies={movies} />}
         {!isLoading && movies.length === 0 && <p>Found no movies</p>}
         {isLoading && !error && <p>Is Loading...</p>}
         {error && <p>{error}</p>}
