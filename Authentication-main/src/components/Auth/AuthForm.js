@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 
 import classes from "./AuthForm.module.css";
-import { firebaseSignUpURL } from "../../utils/firebaseConstants";
+import { firebaseLoginURL, firebaseSignUpURL } from "../../utils/firebaseConstants";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,15 +16,39 @@ const AuthForm = () => {
 
   const onClickHandler = async (e) => {
     try {
-      e.preventDefault();
+      e.preventDefault(); 
+       setisLoading(true);
+       const newUser = {
+        email: email.current.value,
+        password: password.current.value,
+        returnSecureToken: true,
+      };
+
       if (isLogin) {
+       
+        const postData = await fetch(firebaseLoginURL, {
+          method: "POST",
+          body: JSON.stringify(newUser),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        setisLoading(false)
+
+        const data=await postData.json()
+        console.log(data)
+        if(postData.ok){
+          console.log("User Logged In")
+          localStorage.setItem("token",data.idToken)
+        }else{
+          throw new Error(data.error.message)
+        }
+
+
+        console.log(postData)
       } else {
-        setisLoading(true);
-        const newUser = {
-          email: email.current.value,
-          password: password.current.value,
-          returnSecureToken: true,
-        };
+    
 
         const postData = await fetch(firebaseSignUpURL, {
           method: "POST",
@@ -35,6 +59,8 @@ const AuthForm = () => {
         });
         setisLoading(false); 
         const data = await postData.json();
+
+       
         if (postData.ok) {
           console.log("successfully added into firebase");
          
@@ -64,7 +90,7 @@ const AuthForm = () => {
         </div>
         <div className={classes.actions}>
           <button onClick={onClickHandler}>
-            {isLogin ? "Login" :( isLoading ? "Sending Request...." : "Signup")}
+            {isLogin ?  (isLoading ? "Sending Request...." : "Login") :( isLoading ? "Sending Request...." : "Signup")}
           </button>
           <button
             type="button"
