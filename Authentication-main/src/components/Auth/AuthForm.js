@@ -1,9 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 
 import classes from "./AuthForm.module.css";
 import { firebaseLoginURL, firebaseSignUpURL } from "../../utils/firebaseConstants";
+import UserContext from "../../utils/UserContext";
 
 const AuthForm = () => {
+
+  const userContext = useContext(UserContext)
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setisLoading] = useState(false);
 
@@ -40,9 +43,10 @@ const AuthForm = () => {
         console.log(data)
         if(postData.ok){
           console.log("User Logged In")
-          localStorage.setItem("token",data.idToken)
+       
+          userContext.setToken(data.idToken)
         }else{
-          throw new Error(data.error.message)
+          throw new Error("Authentication failed: "+ data.error.message)
         }
 
 
