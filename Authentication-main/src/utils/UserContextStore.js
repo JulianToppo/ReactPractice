@@ -3,7 +3,8 @@ import UserContext from "./UserContext";
 
 
 const UserContextStore = (props) => {
-  const [idToken, setidToken] = useState(null);
+  const tokenLocalStorage= localStorage.getItem("token")
+  const [idToken, setidToken] = useState(tokenLocalStorage);
 
   const addToken = (tokenId) => {
     setidToken(tokenId);

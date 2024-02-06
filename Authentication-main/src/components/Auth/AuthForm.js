@@ -46,6 +46,7 @@ const AuthForm = () => {
           console.log("User Logged In")
        
           userContext.setToken(data.idToken)
+          localStorage.setItem("token",data.idToken)
          
         }else{
           throw new Error("Authentication failed: "+ data.error.message)

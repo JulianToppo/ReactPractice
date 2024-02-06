@@ -12,6 +12,7 @@ const MainNavigation = () => {
   const onLogoutClick =(e)=>{
     e.preventDefault();
     userContext.deletetoken(null)
+    localStorage.removeItem("token")
     history.replace("/")
     
   }
