@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import classes from "./MainNavigation.module.css";
 import { useContext } from "react";
@@ -6,11 +6,14 @@ import UserContext from "../../utils/UserContext";
 
 
 const MainNavigation = () => {
+  const history= useHistory()
   const userContext = useContext(UserContext);
  
   const onLogoutClick =(e)=>{
     e.preventDefault();
     userContext.deletetoken(null)
+    history.replace("/")
+    
   }
   return (
     <header className={classes.header}>
