@@ -4,6 +4,7 @@ import classes from "./AuthForm.module.css";
 import { firebaseLoginURL, firebaseSignUpURL } from "../../utils/firebaseConstants";
 import UserContext from "../../utils/UserContext";
 
+
 const AuthForm = () => {
 
   const userContext = useContext(UserContext)
@@ -45,6 +46,7 @@ const AuthForm = () => {
           console.log("User Logged In")
        
           userContext.setToken(data.idToken)
+         
         }else{
           throw new Error("Authentication failed: "+ data.error.message)
         }
