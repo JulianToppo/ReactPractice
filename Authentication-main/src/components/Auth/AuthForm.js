@@ -1,5 +1,5 @@
 import { useState, useRef, useContext } from "react";
-
+import {useHistory} from "react-router-dom"
 import classes from "./AuthForm.module.css";
 import { firebaseLoginURL, firebaseSignUpURL } from "../../utils/firebaseConstants";
 import UserContext from "../../utils/UserContext";
@@ -8,6 +8,7 @@ import UserContext from "../../utils/UserContext";
 const AuthForm = () => {
 
   const userContext = useContext(UserContext)
+  const history= useHistory();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setisLoading] = useState(false);
 
@@ -17,6 +18,15 @@ const AuthForm = () => {
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
+
+  const autologout=()=>{
+    setTimeout(()=>{
+      console.log("settimeoit called")
+      userContext.deletetoken();
+      localStorage.removeItem("token")
+      history.replace('/auth')
+    },10000)
+  }
 
   const onClickHandler = async (e) => {
     try {
@@ -47,6 +57,7 @@ const AuthForm = () => {
        
           userContext.setToken(data.idToken)
           localStorage.setItem("token",data.idToken)
+          autologout();
          
         }else{
           throw new Error("Authentication failed: "+ data.error.message)
