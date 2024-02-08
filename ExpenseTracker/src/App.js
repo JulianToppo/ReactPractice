@@ -4,10 +4,10 @@ import SignUp from "./components/SignUp";
 
 function App() {
   return (
-    <React.Fragment>
-      <Header/>
+    <div className="h-screen w-screen">
+      {/* <Header/> */}
       <SignUp />
-    </React.Fragment>
+    </div>
   );
 }
 
