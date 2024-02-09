@@ -1,5 +1,5 @@
-import React, {useRef , useState } from "react";
-import { updateProfileURL } from "../utils/firebase/constants";
+import React, {useEffect, useRef , useState } from "react";
+import { getUserDataURL, updateProfileURL } from "../utils/firebase/constants";
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false);
@@ -9,7 +9,44 @@ const Home = () => {
   const onClickCompleteHandler = (e) => {
     e.preventDefault();
     setShowForm(!showForm);
+    getUserData();
   };
+
+  const fillDataInForm= (data)=>{
+    fullname.current.value=data.displayName
+    photoURL.current.value= data.photoUrl
+  }
+
+  const getUserData= async()=>{
+    const formObj= {
+      idToken:localStorage.getItem("token"),
+    }
+
+    try {
+      const post = await fetch(getUserDataURL, {
+        method: "POST",
+        body: JSON.stringify(formObj),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+
+      const data = await post.json();
+      if (post.ok) {
+        console.log(" User data successfully fetched");
+        console.log(data.users[0])
+
+        fillDataInForm(data.users[0]);
+      } else {
+        throw new Error(data.error.message);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
 
   const onUpdateFormSubmitHandler=async (e)=>{
     e.preventDefault()
@@ -35,6 +72,7 @@ const Home = () => {
       if (post.ok) {
         console.log(" User has successfully updated");
         console.log(data)
+
       } else {
         throw new Error(data.error.message);
       }
@@ -43,6 +81,9 @@ const Home = () => {
     }
 
   }
+
+
+
   return (
     <div>
       <div className="flex justify-between bg-slate-100 p-2 shadow-lg">
