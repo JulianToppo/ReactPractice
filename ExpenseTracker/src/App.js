@@ -1,12 +1,17 @@
 import React from "react";
-import Header from "./components/Header";
+
 import SignUp from "./components/SignUp";
+import Home from "./components/Home";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <div className="h-screen w-screen">
       {/* <Header/> */}
-      <SignUp />
+      <Routes>
+        <Route path="/" element={<SignUp />} />
+        <Route path="/loginsuccess" element={<Home />} />
+      </Routes>
     </div>
   );
 }
