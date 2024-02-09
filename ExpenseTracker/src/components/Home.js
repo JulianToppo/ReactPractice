@@ -1,5 +1,6 @@
 import React, {useEffect, useRef , useState } from "react";
 import { getUserDataURL, updateProfileURL } from "../utils/firebase/constants";
+import Header from "./Header";
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false);
@@ -86,6 +87,7 @@ const Home = () => {
 
   return (
     <div>
+      <Header/>
       <div className="flex justify-between bg-slate-100 p-2 shadow-lg">
         <div>
           <p>Welcome to Expense Tracker!</p>

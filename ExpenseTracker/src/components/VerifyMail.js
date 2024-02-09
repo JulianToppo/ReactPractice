@@ -1,12 +1,15 @@
 import React from 'react'
 import { emailVerificationMail } from '../utils/firebase/constants';
+import { useNavigate } from 'react-router-dom';
 
 const VerifyMail = () => {
+    const navigate = useNavigate()
     const verifyMailOnclickHanlder=async(e)=>{
         e.preventDefault();
         const requestObj={
             requestType:"VERIFY_EMAIL",
-            idToken:localStorage.getItem("token")
+            idToken:localStorage.getItem("token"),
+           
         }
 
         try {
@@ -23,6 +26,7 @@ const VerifyMail = () => {
             if (post.ok) {
               console.log(" Email Verification successfully sent");
               console.log(post,data)
+              navigate('/loginsuccess')
          
             } else {
               throw new Error(data.error.message);
@@ -34,7 +38,7 @@ const VerifyMail = () => {
     return (
     <div>
         
-        <button className='p-2' onClick={verifyMailOnclickHanlder}>Verify Mail</button>
+        <button className='p-2 bg-green-200' onClick={verifyMailOnclickHanlder}>Verify Mail</button>
     </div>
   )
 }
