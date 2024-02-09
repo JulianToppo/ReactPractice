@@ -9,7 +9,7 @@ const Home = () => {
   const onClickCompleteHandler = (e) => {
     e.preventDefault();
     setShowForm(!showForm);
-    getUserData();
+    if(showForm==true) {getUserData();}
   };
 
   const fillDataInForm= (data)=>{
