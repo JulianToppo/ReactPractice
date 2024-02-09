@@ -47,7 +47,7 @@ const SignUp = () => {
         if (post.ok) {
           console.log(" User has successfully logged in.");
           console.log(data)
-          
+          localStorage.setItem("token",data.idToken)
           navigate('/loginsuccess')
         } else {
           console.log("data",data.error.message)
