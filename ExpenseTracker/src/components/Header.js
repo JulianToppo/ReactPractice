@@ -1,12 +1,13 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react'
+import UserContext from '../utils/context/UserContext';
 
 const Header = () => {
-  const navigate = useNavigate()
+
+  const userCtx= useContext(UserContext);
+
   const onLogoutClickHandler = (e)=>{
     e.preventDefault();
-    localStorage.removeItem("token")
-    navigate('/')
+    userCtx.LogoutUser();
   }
 
   return (

@@ -1,71 +1,27 @@
-import React, { useRef, useState } from "react";
-import {useNavigate} from "react-router-dom"
-import { firebaseLoginURL, firebaseSignupURL } from "../utils/firebase/constants";
+import React, { useContext, useRef, useState } from "react";
+import UserContext from "../utils/context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const [isLogin, setisLogin] = useState(false)
+  const [isLogin, setisLogin] = useState(false);
   const email = useRef();
   const password = useRef();
-  
+  const userCtx = useContext(UserContext);
   const navigate= useNavigate();
-
-  const signupfunc =async (email, password) => {
-    try {
-      
-        const formObj = {
-          email: email,
-          password: password,
-          returnSecureToken: true,
-        };
-       if(!isLogin) {
-        const post = await fetch(firebaseSignupURL, {
-          method: "POST",
-          body: JSON.stringify(formObj),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        
-
-        const data = await post.json();
-        if (post.ok) {
-          console.log(" User has successfully signed up.");
-        } else {
-          throw new Error(data.error.message);
-        }
-      }else{
-        const post = await fetch(firebaseLoginURL, {
-          method: "POST",
-          body: JSON.stringify(formObj),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        
-        console.log(post)
-        const data = await post.json();
-        if (post.ok) {
-          console.log(" User has successfully logged in.");
-          console.log(data)
-          localStorage.setItem("token",data.idToken)
-          navigate('/verifymail')
-        } else {
-          console.log("data",data.error.message)
-          throw new Error(data.error.message);
-        }
-      }
-
-    } catch (error) {
-   
-      alert(error)
-    }
-  };
-
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    signupfunc(email.current.value, password.current.value);
+    if (isLogin) {
+      userCtx.LoginUser(email.current.value, password.current.value);
+    } else {
+      userCtx.SignUpUser(email.current.value, password.current.value);
+    }
   };
+
+  const onForgotPasswordManager = ()=>{
+    navigate('/forgotpassword')
+  }
+
   return (
     <div className="flex justify-center items-center mt-3 h-3/4 w-1/2 mx-auto  bg-slate-300 rounded-lg">
       <form
@@ -73,7 +29,7 @@ const SignUp = () => {
         onSubmit={onSubmitHandler}
       >
         <div>
-          <h1 className="text-3xl">{isLogin?"Login":"SignUp"}</h1>
+          <h1 className="text-3xl">{isLogin ? "Login" : "SignUp"}</h1>
         </div>
         <div>
           <label>Email</label>
@@ -97,11 +53,24 @@ const SignUp = () => {
           ></input>
           <br></br>
         </div>
-        <button className="p-2 self-center bg-blue-500 w-3/5 rounded-lg" type="submit">
-        {isLogin?"Login":"SignUp"}
+        {isLogin && <p onClick={onForgotPasswordManager} className="text-sm self-center px-6 hover:font-bold cursor-pointer rounded-lg text-red-500">Forgot Password ?</p> }
+        <button
+          className="p-2 self-center bg-blue-500 w-3/5 rounded-lg"
+          type="submit"
+        >
+          {isLogin ? "Login" : "SignUp"}
         </button>
         <div className="w-full border-zinc-950 bg-blue-300 bg-opacity-30  rounded-md p-4">
-          <p className="self-center"  onClick={()=>{setisLogin(!isLogin)}}>{isLogin?"Don't Have an account? Signup":"Have an account? Login"}</p>
+          <p
+            className="self-center"
+            onClick={() => {
+              setisLogin(!isLogin);
+            }}
+          >
+            {isLogin
+              ? "Don't Have an account? Signup"
+              : "Have an account? Login"}
+          </p>
         </div>
       </form>
     </div>

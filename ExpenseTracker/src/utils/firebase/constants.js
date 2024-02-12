@@ -4,8 +4,8 @@ export const firebaseLoginURL = `https://identitytoolkit.googleapis.com/v1/accou
 export const firebaseSignupURL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 export const updateProfileURL = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${API_KEY}`;
 
-export const getUserDataURL=`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${API_KEY}`
+export const getUserDataURL = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${API_KEY}`;
 
-export const emailVerificationMail=`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`
+export const emailVerificationMail = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`;
 
-
+export const resetPasswordEmail = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`;

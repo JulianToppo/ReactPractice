@@ -1,93 +1,47 @@
-import React, {useEffect, useRef , useState } from "react";
-import { getUserDataURL, updateProfileURL } from "../utils/firebase/constants";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Header from "./Header";
+import UserContext from "../utils/context/UserContext";
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false);
-  const fullname= useRef(null)
-  const photoURL = useRef(null)
+  const fullname = useRef(null);
+  const photoURL = useRef(null);
+  const userCtx = useContext(UserContext);
+
+  useEffect(() => {
+    if (showForm === true) {
+      console.log("True Called");
+      getUserData();
+    }
+  }, [showForm]);
 
   const onClickCompleteHandler = (e) => {
     e.preventDefault();
+    console.log("Complete form called");
+    console.log(showForm);
+
     setShowForm(!showForm);
-    if(showForm==true) {getUserData();}
   };
 
-  const fillDataInForm= (data)=>{
-    fullname.current.value=data.displayName
-    photoURL.current.value= data.photoUrl
-  }
+  const fillDataInForm = (data) => {
+    fullname.current.value = data.displayName;
+    photoURL.current.value = data.photoUrl;
+  };
 
-  const getUserData= async()=>{
-    const formObj= {
-      idToken:localStorage.getItem("token"),
-    }
+  const getUserData = async () => {
+    const data = await userCtx.getUserData();
+    console.log(data);
+    fillDataInForm(data);
+  };
 
-    try {
-      const post = await fetch(getUserDataURL, {
-        method: "POST",
-        body: JSON.stringify(formObj),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      
-
-      const data = await post.json();
-      if (post.ok) {
-        console.log(" User data successfully fetched");
-        console.log(data.users[0])
-
-        fillDataInForm(data.users[0]);
-      } else {
-        throw new Error(data.error.message);
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-
-
-  const onUpdateFormSubmitHandler=async (e)=>{
-    e.preventDefault()
-
-    const formObj= {
-      displayName:fullname.current.value,
-      photoUrl:photoURL.current.value,
-      idToken:localStorage.getItem("token"),
-      returnSecureToken:true
-    }
-
-    try {
-      const post = await fetch(updateProfileURL, {
-        method: "POST",
-        body: JSON.stringify(formObj),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      
-
-      const data = await post.json();
-      if (post.ok) {
-        console.log(" User has successfully updated");
-        console.log(data)
-
-      } else {
-        throw new Error(data.error.message);
-      }
-    } catch (error) {
-      console.log(error)
-    }
-
-  }
-
-
+  const onUpdateFormSubmitHandler = async (e) => {
+    e.preventDefault();
+    userCtx.UpdateProfile(fullname.current.value, photoURL.current.value);
+  };
 
   return (
     <div>
-      <Header/>
+      <Header />
       <div className="flex justify-between bg-slate-100 p-2 shadow-lg">
         <div>
           <p>Welcome to Expense Tracker!</p>
@@ -108,7 +62,10 @@ const Home = () => {
 
           <div className="w-3/4">
             <h1 className="font-medium text-2xl">Contact Details</h1>
-            <form className="flex flex-col space-y-6" onSubmit={onUpdateFormSubmitHandler}>
+            <form
+              className="flex flex-col space-y-6"
+              onSubmit={onUpdateFormSubmitHandler}
+            >
               <div className="flex justify-around space-x-11 ">
                 <div className="flex w-full ">
                   <label htmlFor="fullname">Full Name:</label>
@@ -123,7 +80,7 @@ const Home = () => {
                 <div className="flex space-x-7 w-full ">
                   <label htmlFor="profileUrl">Profile Photo Url:</label>
                   <input
-                  ref={photoURL}
+                    ref={photoURL}
                     id="profileUrl"
                     type="text"
                     className="border border-gray-400 w-full"
