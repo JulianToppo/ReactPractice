@@ -5,12 +5,15 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import UserContextStore from "./utils/context/UserContextStore";
+import UserDatabaseStore from "./utils/context/UserDatabaseStore";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserContextStore>
-        <App />{" "}
+        <UserDatabaseStore>
+          <App />{" "}
+        </UserDatabaseStore>
       </UserContextStore>
     </BrowserRouter>
   </React.StrictMode>

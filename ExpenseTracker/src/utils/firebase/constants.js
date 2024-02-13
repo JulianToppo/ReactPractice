@@ -9,3 +9,4 @@ export const getUserDataURL = `https://identitytoolkit.googleapis.com/v1/account
 export const emailVerificationMail = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`;
 
 export const resetPasswordEmail = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`;
+

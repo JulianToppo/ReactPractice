@@ -1,6 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import UserDatabase from "../utils/context/UserDatabaseContext";
 
 const DailyExpenses = () => {
+  const dbCtx = useContext(UserDatabase);
+  const [expenses, setExpenses] = useState({});
+  const desc = useRef();
+  const price = useRef();
+  const category = useRef();
+
   const expenseCategories = [
     "Housing",
     "Transportation",
@@ -19,11 +26,9 @@ const DailyExpenses = () => {
     "Miscellaneous",
   ];
 
-  const [expenses, setExpenses] = useState([]);
-
-  const desc = useRef();
-  const price = useRef();
-  const category = useRef();
+  useEffect(() => {
+    setExpenses(dbCtx.expenses);
+  }, [dbCtx.expenses]);
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
@@ -34,8 +39,12 @@ const DailyExpenses = () => {
       category: category.current.value,
     };
 
-    setExpenses([...expenses, formObj]);
-
+    if(dbCtx.addExpenses(formObj)){
+      setExpenses((expenses) => {
+      return {...expenses, formObj};
+    });
+    }
+    
     // Clear input fields after submission
     desc.current.value = "";
     price.current.value = "";
@@ -46,7 +55,10 @@ const DailyExpenses = () => {
     <div className="flex flex-col items-center justify-center">
       <div className="p-2 bg-slate-500">
         {/* form */}
-        <form onSubmit={onSubmitHandler} className="flex rounded-lg flex-row space-x-3 ">
+        <form
+          onSubmit={onSubmitHandler}
+          className="flex rounded-lg flex-row space-x-3 "
+        >
           <label>Description:</label>
           <input type="text" ref={desc} className="mb-1"></input>
 
@@ -68,11 +80,11 @@ const DailyExpenses = () => {
         </form>
       </div>
       <div className="space-y-3">
-        {expenses.map((item, index) => (
-          <div className="flex bg-blue-200 justify-evenly  p-2" key={index}>
-            <li>{item.description}</li>
-            <li>{item.price}</li>
-            <li>{item.category}</li>
+        {Object.entries(expenses).map(([key,value]) => (
+          <div className="flex bg-blue-200 justify-evenly  p-2" key={key}>
+            <li>{value.description}</li>
+            <li>{value.price}</li>
+            <li>{value.category}</li>
           </div>
         ))}
       </div>
