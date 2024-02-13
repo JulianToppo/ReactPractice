@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Header from "./Header";
 import UserContext from "../utils/context/UserContext";
+import DailyExpenses from "./DailyExpenses";
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false);
@@ -100,6 +101,8 @@ const Home = () => {
           </div>
         </div>
       )}
+
+      <DailyExpenses/>
     </div>
   );
 };
