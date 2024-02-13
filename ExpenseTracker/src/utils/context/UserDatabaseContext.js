@@ -3,7 +3,9 @@ import { createContext } from "react";
 const UserDatabase= createContext({
 
 expenses:[],
-addExpenses:()=>{}
+addExpenses:()=>{},
+deleteExpense:()=>{},
+editExpense:()=>{}
 
 })
 
