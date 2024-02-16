@@ -1,26 +1,27 @@
-import React, { useContext, useRef, useState } from "react";
-import UserContext from "../utils/context/UserContext";
+import React, { useRef, useState, useSelector } from "react";
+
 import { useNavigate } from "react-router-dom";
+import UserFunctions from "../utils/storefunctions/UserFunctions";
 
 const SignUp = () => {
+  const { loginUserFunc, signUpFunc } = UserFunctions();
   const [isLogin, setisLogin] = useState(false);
   const email = useRef();
   const password = useRef();
-  const userCtx = useContext(UserContext);
-  const navigate= useNavigate();
+  const navigate = useNavigate();
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
     if (isLogin) {
-      userCtx.LoginUser(email.current.value, password.current.value);
+      loginUserFunc(email.current.value, password.current.value);
     } else {
-      userCtx.SignUpUser(email.current.value, password.current.value);
+      signUpFunc(email.current.value, password.current.value);
     }
   };
 
-  const onForgotPasswordManager = ()=>{
-    navigate('/forgotpassword')
-  }
+  const onForgotPasswordManager = () => {
+    navigate("/forgotpassword");
+  };
 
   return (
     <div className="flex justify-center items-center mt-3 h-3/4 w-1/2 mx-auto  bg-slate-300 rounded-lg">
@@ -53,7 +54,14 @@ const SignUp = () => {
           ></input>
           <br></br>
         </div>
-        {isLogin && <p onClick={onForgotPasswordManager} className="text-sm self-center px-6 hover:font-bold cursor-pointer rounded-lg text-red-500">Forgot Password ?</p> }
+        {isLogin && (
+          <p
+            onClick={onForgotPasswordManager}
+            className="text-sm self-center px-6 hover:font-bold cursor-pointer rounded-lg text-red-500"
+          >
+            Forgot Password ?
+          </p>
+        )}
         <button
           className="p-2 self-center bg-blue-500 w-3/5 rounded-lg"
           type="submit"

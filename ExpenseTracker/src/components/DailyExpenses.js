@@ -1,8 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import UserDatabase from "../utils/context/UserDatabaseContext";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import DatabaseFunctions from "../utils/storefunctions/DatabaseFunctions";
 
 const DailyExpenses = () => {
-  const dbCtx = useContext(UserDatabase);
+  const {getExpenses, addExpenseFunc, deleteExpenseFunc, editExpenseFunc } =
+    DatabaseFunctions();
+  const expensesStr = useSelector((store) => store.expenses);
+  const dispatch = useDispatch();
   const [expenses, setExpenses] = useState({});
   const [isUpdate, setIsUpdate] = useState({
     id: "",
@@ -29,24 +33,28 @@ const DailyExpenses = () => {
     "Travel",
     "Miscellaneous",
   ];
-
   useEffect(() => {
-    setExpenses(dbCtx.expenses);
-  }, [dbCtx.expenses]);
+    console.log("changes in expenseslice", expensesStr.expenses);
+    setExpenses(expensesStr.expenses);
+  }, [expensesStr.expenses]); 
 
-  const addNewEntry = () => {
+
+  
+  useEffect(()=>{
+    getExpenses();
+  },[]) 
+
+
+ 
+
+  const addNewEntry = async () => {
     const formObj = {
       description: desc.current.value,
       price: price.current.value,
       category: category.current.value,
     };
 
-    if (dbCtx.addExpenses(formObj)) {
-      setExpenses((expenses) => {
-        return { ...expenses, formObj };
-      });
-    }
-
+    addExpenseFunc(formObj);
     // Clear input fields after submission
     desc.current.value = "";
     price.current.value = "";
@@ -60,7 +68,7 @@ const DailyExpenses = () => {
       category: category.current.value,
     };
 
-    dbCtx.editExpense(isUpdate.id, formObj);
+    editExpenseFunc(isUpdate.id, formObj);
 
     // Clear input fields after submission
     desc.current.value = "";
@@ -83,13 +91,13 @@ const DailyExpenses = () => {
     }
   };
 
-  const onDeleteHandler = (e) => {
+  const onDeleteHandler = async (e) => {
     e.preventDefault();
 
     setIsUpdate(!isUpdate);
     console.log(e);
     const id = e.target.parentElement.parentElement.attributes.id.value;
-    if (dbCtx.deleteExpense(id)) {
+    if (await deleteExpenseFunc(id)) {
       e.target.parentElement.parentElement.remove();
     }
   };
@@ -140,25 +148,25 @@ const DailyExpenses = () => {
           </button>
         </form>
       </div>
-      <div class="overflow-x-auto">
-        <table class="table-auto min-w-full divide-y divide-gray-200">
+      <div className="overflow-x-auto">
+        <table className="table-auto min-w-full divide-y divide-gray-200">
           <thead>
             <tr>
-              <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Description
               </th>
-              <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Price
               </th>
-              <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Category
               </th>
-              <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200">
             {Object.entries(expenses).map(([key, value]) => (
               <tr id={key} key={key}>
                 <td>{value.description}</td>
@@ -167,13 +175,13 @@ const DailyExpenses = () => {
 
                 <td>
                   <button
-                    class="text-indigo-600 hover:text-indigo-900"
+                    className="text-indigo-600 hover:text-indigo-900"
                     onClick={onDeleteHandler}
                   >
                     Delete
                   </button>
                   <button
-                    class="text-indigo-600 hover:text-indigo-900 ml-2"
+                    className="text-indigo-600 hover:text-indigo-900 ml-2"
                     onClick={onEditHandler}
                   >
                     Edit

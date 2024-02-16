@@ -1,58 +1,19 @@
-import React, { useEffect, useState } from "react";
-import UserContext from "./UserContext";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import {
   emailVerificationMail,
   firebaseLoginURL,
   firebaseSignupURL,
   getUserDataURL,
   updateProfileURL,
+  resetPasswordEmail,
 } from "../firebase/constants";
-import { resetPasswordEmail } from "../firebase/constants";
+import { setLoginStatus ,setLogoutStatus} from "../store/authSlice";
 
-const UserContextStore = (props) => {
-  const [LoginStatus, setLoginStatus] = useState(false);
-
-  useEffect(()=>{
-    if(localStorage.getItem("token")){
-    setLoginStatus(true)
-  }
-},[])
-
+const UserFunctions = () => {
   const navigate = useNavigate();
-
-  const loginUserFunc = async (email, password) => {
-    try {
-      const formObj = {
-        email: email,
-        password: password,
-        returnSecureToken: true,
-      };
-
-      const post = await fetch(firebaseLoginURL, {
-        method: "POST",
-        body: JSON.stringify(formObj),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      console.log(post);
-      const data = await post.json();
-      if (post.ok) {
-        console.log(" User has successfully logged in.");
-        console.log(data);
-        localStorage.setItem("token", data.idToken);
-        setLoginStatus(!LoginStatus);
-        navigate("/verifymail");
-      } else {
-        console.log("data", data.error.message);
-        throw new Error(data.error.message);
-      }
-    } catch (error) {
-      alert(error);
-    }
-  };
+  const auth = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
 
   const signUpFunc = async (email, password) => {
     try {
@@ -169,13 +130,14 @@ const UserContextStore = (props) => {
   const LogoutFunc = () => {
     try {
       localStorage.removeItem("token");
+      dispatch(setLogoutStatus())
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const ForgotPasswordFunc= async(email)=>{
+  const ForgotPasswordFunc = async (email) => {
     const requestObj = {
       requestType: "PASSWORD_RESET",
       email: email,
@@ -194,29 +156,60 @@ const UserContextStore = (props) => {
       if (post.ok) {
         console.log(" Email Reset successfully sent");
         console.log(post, data);
-        navigate("/")
+        navigate("/");
       } else {
         throw new Error(data.error.message);
       }
     } catch (error) {
       console.log(error);
     }
-  }
-
-  const store = {
-    isLoggedIn: LoginStatus,
-    LoginUser: loginUserFunc,
-    SignUpUser: signUpFunc,
-    LogoutUser: LogoutFunc,
-    UpdateProfile: updateProfileFunc,
-    getUserData: getUserDataFunc,
-    EmailVerification: EmailVerificationFunc,
-    ForgotPassword:ForgotPasswordFunc
   };
 
-  return (
-    <UserContext.Provider value={store}>{props.children}</UserContext.Provider>
-  );
+  const loginUserFunc = async (email, password) => {
+    console.log("login function called")
+    try {
+      const formObj = {
+        email: email,
+        password: password,
+        returnSecureToken: true,
+      };
+
+      const post = await fetch(firebaseLoginURL, {
+        method: "POST",
+        body: JSON.stringify(formObj),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(post);
+      const data = await post.json();
+      if (post.ok) {
+        console.log(" User has successfully logged in.");
+        console.log(data);
+        localStorage.setItem("token", data.idToken);
+
+        dispatch(setLoginStatus(data));
+        // setLoginStatus(!LoginStatus);
+        navigate("/verifymail");
+      } else {
+        console.log("data", data.error.message);
+        throw new Error(data.error.message);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  return {
+    signUpFunc,
+    updateProfileFunc,
+    getUserDataFunc,
+    EmailVerificationFunc,
+    LogoutFunc,
+    ForgotPasswordFunc,
+    loginUserFunc,
+  };
 };
 
-export default UserContextStore;
+export default UserFunctions;

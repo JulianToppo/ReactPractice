@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import UserContext from "../utils/context/UserContext";
+import React from "react";
+import UserFunctions from "../utils/storefunctions/UserFunctions";
 
 const VerifyMail = () => {
-  const userCtx = useContext(UserContext);
+  const { EmailVerificationFunc } = UserFunctions();
   const verifyMailOnclickHanlder = async (e) => {
     e.preventDefault();
-    userCtx.EmailVerification();
+    EmailVerificationFunc();
   };
   return (
     <div>

@@ -1,14 +1,13 @@
-import React, { useContext, useRef } from 'react'
-import UserContext from '../utils/context/UserContext';
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom';
+import UserFunctions from '../utils/storefunctions/UserFunctions';
 
 const ForgotPassword = () => {
     const email = useRef();
-    const userCtx= useContext(UserContext);
-
+    const {ForgotPasswordFunc} = UserFunctions();
     const onRegisterClick=(e)=>{
         e.preventDefault();
-        userCtx.ForgotPassword(email.current.value)
+        ForgotPasswordFunc(email.current.value)
     }
 
   return (

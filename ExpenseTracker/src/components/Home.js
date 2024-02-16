@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "./Header";
-import UserContext from "../utils/context/UserContext";
 import DailyExpenses from "./DailyExpenses";
+import UserFunctions from "../utils/storefunctions/UserFunctions";
 
 const Home = () => {
+  const { getUserDataFunc, updateProfileFunc } =  UserFunctions();
   const [showForm, setShowForm] = useState(false);
   const fullname = useRef(null);
   const photoURL = useRef(null);
-  const userCtx = useContext(UserContext);
 
   useEffect(() => {
     if (showForm === true) {
@@ -30,14 +30,14 @@ const Home = () => {
   };
 
   const getUserData = async () => {
-    const data = await userCtx.getUserData();
+    const data = await getUserDataFunc();
     console.log(data);
     fillDataInForm(data);
   };
 
   const onUpdateFormSubmitHandler = async (e) => {
     e.preventDefault();
-    userCtx.UpdateProfile(fullname.current.value, photoURL.current.value);
+    updateProfileFunc(fullname.current.value, photoURL.current.value);
   };
 
   return (

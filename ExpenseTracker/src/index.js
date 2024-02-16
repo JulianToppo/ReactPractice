@@ -4,18 +4,18 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import UserContextStore from "./utils/context/UserContextStore";
-import UserDatabaseStore from "./utils/context/UserDatabaseStore";
+import { Provider } from "react-redux";
+import store from "./utils/store/centralStore";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <UserContextStore>
-        <UserDatabaseStore>
-          <App />{" "}
-        </UserDatabaseStore>
-      </UserContextStore>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import UserDatabase from "./UserDatabaseContext";
 import { firebaseDBURL } from "../firebase/dbConstants";
-import { setExpenses } from "../store/ExpenseSlice";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addExpenseRedx, setExpense } from "../store/ExpenseSlice";
 
-const UserDatabaseStore = (props) => {
- 
-  const dispatch=useDispatch()
+const DatabaseFunctions = (props) => {
+  const expenses = useSelector((store) => store.expenses);
+  const dispatch = useDispatch();
 
   const getExpenses = async () => {
     try {
@@ -23,7 +22,8 @@ const UserDatabaseStore = (props) => {
 
         console.log(data);
         {
-          data && dispatch(setExpenses(data));
+          
+          data && dispatch(setExpense(data));
         }
       } else {
         throw new Error(data.error.message);
@@ -32,10 +32,6 @@ const UserDatabaseStore = (props) => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    getExpenses();
-  }, []);
 
   const addExpenseFunc = async (formObj) => {
     try {
@@ -51,6 +47,9 @@ const UserDatabaseStore = (props) => {
       if (post.ok) {
         console.log("Database entry successfully sent");
         console.log(data);
+   
+        dispatch(addExpenseRedx({data,formObj}));
+        console.log("dispatch completed")
         return true;
       } else {
         throw new Error(data.error.message);
@@ -83,40 +82,30 @@ const UserDatabaseStore = (props) => {
     }
   };
 
-  const editExpenseFunc = async (id,formObj) => {
+  const editExpenseFunc = async (id, formObj) => {
     try {
-        const post = await fetch(firebaseDBURL + "expenses/" + id + ".json", {
-          method: "PUT",
-          body: JSON.stringify(formObj),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-  
-        const data = await post.json();
-      
-        if (post.ok) {
-          console.log("Database entry successfully edited");
-         getExpenses();
-        } else {
-          throw new Error(data.error.message);
-        }
-      } catch (error) {
-        console.log(error);
+      const post = await fetch(firebaseDBURL + "expenses/" + id + ".json", {
+        method: "PUT",
+        body: JSON.stringify(formObj),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await post.json();
+
+      if (post.ok) {
+        console.log("Database entry successfully edited");
+        getExpenses();
+      } else {
+        throw new Error(data.error.message);
       }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const store = {
-    expenses: expenses,
-    addExpenses: addExpenseFunc,
-    deleteExpense: deleteExpenseFunc,
-    editExpense: editExpenseFunc,
-  };
-  return (
-    <UserDatabase.Provider value={store}>
-      {props.children}
-    </UserDatabase.Provider>
-  );
+  return { editExpenseFunc, deleteExpenseFunc, addExpenseFunc, getExpenses };
 };
 
-export default UserDatabaseStore;
+export default DatabaseFunctions;
