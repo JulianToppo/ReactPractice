@@ -1,0 +1,62 @@
+import { render } from "@testing-library/react";
+import { Provider } from "react-redux";
+import store from "../utils/store/centralStore";
+import { BrowserRouter } from "react-router-dom";
+import DailyExpenses from "./DailyExpenses";
+
+describe("Daily Expense test cases", () => {
+  test("description ", async () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <DailyExpenses />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const Description = await getByText("Description:", { exact: false });
+    expect(Description).toBeInTheDocument();
+  });
+
+  //Price
+  test("price ", async () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <DailyExpenses />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const price = await getByText("Price:", { exact: false });
+    expect(price).toBeInTheDocument();
+  });
+
+  //category
+  test("category ", async () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <DailyExpenses />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const category = await getByText("Category:", { exact: false });
+    expect(category).toBeInTheDocument();
+  });
+
+  //add expense
+  test("add expense ", async () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <DailyExpenses />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const addexpense = await getByText("Add Expense", { exact: false });
+    expect(addexpense).toBeInTheDocument();
+  });
+});
